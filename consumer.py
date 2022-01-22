@@ -57,7 +57,9 @@ def main():
     print("========== opening fit stream")
     temp1 = (
         pipe_t.transform(parsed.select(cls_cols))
-        .select(["prediction", "features"])
+        # .select(["features", "probability"])
+        .select(["probability"])
+        # .select(["*"])
         # .withColumnRenamed("prediction", "value")
         # .selectExpr("CAST(value as STRING)")
     )

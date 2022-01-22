@@ -1,10 +1,11 @@
 import json
 import sys
 from kafka import KafkaProducer
-
+import random 
 characterCount = 113
 
 LABEL_TOPIC = "topicBD2"
+
 
 if __name__ == "__main__":
 
@@ -26,25 +27,24 @@ if __name__ == "__main__":
     )
 
     try:
-        sample_teams = [[93, 94, 89, 41, 44 ],[8, 5, 3, 2, 39]]
-        # sample_teams = [[24, 24, 24, 24, 24 ],[108, 108, 108, 108, 108]]
+        heros = [*range(1, characterCount+1)]
         
-        i = True
         while True:
-            print("press enter to send")
+            team_0_heroes = random.sample(heros, 5)
+            team_1_heroes = random.sample([x for x in heros if x not in team_0_heroes], 5)
+            print(f"{team_0_heroes=} ; {team_1_heroes=}")
+            print("press enter to send teams")
             sth = input()
-            
-            team_1_heroes = sample_teams[0 if i else 1]
-            team_2_heroes = sample_teams[0 if not i else 1]
+
             row = empty_entry.copy()
-            for hero_id in team_1_heroes:
+
+            for hero_id in team_0_heroes:
                 row[f"character_{hero_id}"] = -1
-            for hero_id in team_2_heroes:
+            for hero_id in team_1_heroes:
                 row[f"character_{hero_id}"] = 1
 
             producer.send("topicBD", row)
 
-            print(f"sent data: {team_1_heroes=} ; {team_2_heroes=}")
-            i = not i
+            print(f"sent")
     except KeyboardInterrupt:
         producer.close()
