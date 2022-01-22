@@ -36,25 +36,27 @@ if __name__ == "__main__":
         api_version=(2, 7, 0),
     )
     try:
+        sample_teams = [[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]]
+        i = True
         while True:
-            team_1_heroes = [1, 2, 3, 4, 5]
-            team_2_heroes = [6, 7, 8, 9, 10]
+            team_1_heroes = sample_teams[0 if i else 1]
+            team_2_heroes = sample_teams[0 if not i else 1]
             
             row = empty_entry.copy()
             
             for hero_id in team_1_heroes:
                 row[f"character_{hero_id}"] = 1
+                
             for hero_id in team_2_heroes:
                 row[f"character_{hero_id}"] = -1
                 
             producer.send("topicBD", row)
             
             # print(row)
-            print("sent data: ")
-            print(f"{team_1_heroes=}")
-            print(f"{team_2_heroes=}")
+            print(f"sent data: {team_1_heroes=} ; {team_2_heroes=}")
             
             sleep(3)
+            i = not i
     except KeyboardInterrupt:
         producer.close()
         pass
