@@ -1,1 +1,0 @@
-{"class":"org.apache.spark.ml.feature.StringIndexerModel","timestamp":1642857264510,"sparkVersion":"3.2.0","uid":"StringIndexer_06af2abb3757","paramMap":{"outputCol":"label","stringOrderType":"alphabetAsc","inputCol":"team_win","handleInvalid":"keep"},"defaultParamMap":{"outputCol":"StringIndexer_06af2abb3757__output","stringOrderType":"frequencyDesc","handleInvalid":"error"}}

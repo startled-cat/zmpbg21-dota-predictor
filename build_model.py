@@ -10,7 +10,7 @@ schema = StructType([
     StructField("game_mode", IntegerType(), True),
     StructField("game_type", IntegerType(), True),
     *[StructField(f"character_{x}",  IntegerType(), True)
-      for x in range(characterCount+1)],
+      for x in range(1, characterCount+1)],
 ])
 
 # build spark context
