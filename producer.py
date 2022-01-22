@@ -31,20 +31,22 @@ if __name__ == "__main__":
         
         i = True
         while True:
-            print("press enter to send")
+            team_0_heroes = sample_teams[0 if i else 1]
+            team_1_heroes = sample_teams[0 if not i else 1]
+            
+            row = empty_entry.copy()
+            for hero_id in team_0_heroes:
+                row[f"character_{hero_id}"] = -1
+            for hero_id in team_1_heroes:
+                row[f"character_{hero_id}"] = 1
+            
+            print(f"{team_0_heroes=} ; {team_1_heroes=}")
+            print("press enter to send teams")
             sth = input()
             
-            team_1_heroes = sample_teams[0 if i else 1]
-            team_2_heroes = sample_teams[0 if not i else 1]
-            row = empty_entry.copy()
-            for hero_id in team_1_heroes:
-                row[f"character_{hero_id}"] = -1
-            for hero_id in team_2_heroes:
-                row[f"character_{hero_id}"] = 1
-
             producer.send("topicBD", row)
 
-            print(f"sent data: {team_1_heroes=} ; {team_2_heroes=}")
+            print(f"sent")
             i = not i
     except KeyboardInterrupt:
         producer.close()

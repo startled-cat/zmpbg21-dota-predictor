@@ -32,10 +32,7 @@ if __name__ == "__main__":
         while True:
             team_0_heroes = random.sample(heros, 5)
             team_1_heroes = random.sample([x for x in heros if x not in team_0_heroes], 5)
-            print(f"{team_0_heroes=} ; {team_1_heroes=}")
-            print("press enter to send teams")
-            sth = input()
-
+            
             row = empty_entry.copy()
 
             for hero_id in team_0_heroes:
@@ -43,6 +40,10 @@ if __name__ == "__main__":
             for hero_id in team_1_heroes:
                 row[f"character_{hero_id}"] = 1
 
+            print(f"{team_0_heroes=} ; {team_1_heroes=}")
+            print("press enter to send teams")
+            sth = input()
+            
             producer.send("topicBD", row)
 
             print(f"sent")
