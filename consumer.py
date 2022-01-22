@@ -3,10 +3,10 @@ from pyspark.sql import functions as f
 from pyspark.ml import PipelineModel
 from pyspark.sql.types import (
     IntegerType,
-    StringType,
     StructField,
     StructType,
 )
+
 
 
 KAFKA_TOPIC_NAME = "topicBD"
@@ -30,6 +30,8 @@ message_schema = StructType([
     *[StructField(f"character_{x}",  IntegerType(), True)
       for x in range(1, characterCount+1)],
 ])
+
+
 
 def main():
     print("========== building spark context")
@@ -55,11 +57,12 @@ def main():
     print("========== opening fit stream")
     temp1 = (
         pipe_t.transform(parsed.select(cls_cols))
-        .select(["prediction"])
-        .withColumnRenamed("prediction", "value")
-        .selectExpr("CAST(value as STRING)")
+        .select(["prediction", "features"])
+        # .withColumnRenamed("prediction", "value")
+        # .selectExpr("CAST(value as STRING)")
     )
     print("========== opening console stream")
+    
     console = (
         temp1.writeStream.outputMode("append")
         .option("truncate", "false")
@@ -67,20 +70,8 @@ def main():
         .start()
     )
     
-    
-    # print("========== opening kafka return stream")
-    # stream = (
-    #     temp1.writeStream.format("kafka")
-    #     .option("kafka.bootstrap.servers", KAFKA_BOOTSTRAP_SERVER)
-    #     .option("subscribe", KAFKA_TOPIC_NAME2)
-    #     .option("includeHeaders", "true")
-    #     .start()
-    # )
-    
-    
-    
     console.awaitTermination()
-
+    
 
 if __name__ == "__main__":
     main()
