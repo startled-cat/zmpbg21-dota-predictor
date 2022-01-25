@@ -4,6 +4,8 @@ from kafka import KafkaProducer
 import random 
 characterCount = 113
 
+from heros import getHeroName
+
 LABEL_TOPIC = "topicBD2"
 
 
@@ -40,12 +42,20 @@ if __name__ == "__main__":
             for hero_id in team_1_heroes:
                 row[f"character_{hero_id}"] = 1
 
-            print(f"{team_0_heroes=} ; {team_1_heroes=}")
-            print("press enter to send teams")
+            print("team 1 heroes: ")
+            for heroId in team_0_heroes:
+                print(f"{heroId}\t=> {getHeroName(heroId)}")
+            
+            print("")
+            print("team 2 heroes: ")
+            for heroId in team_1_heroes:
+                print(f"{heroId}\t=> {getHeroName(heroId)}")
+                
+                
+            print("press enter to send teams to kafka topic ... ")
             sth = input()
             
             producer.send("topicBD", row)
-
-            print(f"sent")
+            print("="*32)
     except KeyboardInterrupt:
         producer.close()

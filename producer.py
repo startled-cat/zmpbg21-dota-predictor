@@ -1,10 +1,14 @@
 import json
 import sys
 from kafka import KafkaProducer
-
+import random 
+import time
 characterCount = 113
 
+from heros import getHeroName
+
 LABEL_TOPIC = "topicBD2"
+
 
 if __name__ == "__main__":
 
@@ -26,27 +30,34 @@ if __name__ == "__main__":
     )
 
     try:
-        sample_teams = [[93, 94, 89, 41, 44 ],[8, 5, 3, 2, 39]]
-        # sample_teams = [[24, 24, 24, 24, 24 ],[108, 108, 108, 108, 108]]
+        heros = [*range(1, characterCount+1)]
         
-        i = True
         while True:
-            team_0_heroes = sample_teams[0 if i else 1]
-            team_1_heroes = sample_teams[0 if not i else 1]
+            team_0_heroes = random.sample(heros, 5)
+            team_1_heroes = random.sample([x for x in heros if x not in team_0_heroes], 5)
             
             row = empty_entry.copy()
+
             for hero_id in team_0_heroes:
                 row[f"character_{hero_id}"] = -1
             for hero_id in team_1_heroes:
                 row[f"character_{hero_id}"] = 1
+
+            print("team 1 heroes: ")
+            for heroId in team_0_heroes:
+                print(f"{heroId}\t=> {getHeroName(heroId)}")
             
-            print(f"{team_0_heroes=} ; {team_1_heroes=}")
-            print("press enter to send teams")
-            sth = input()
+            print("")
+            print("team 2 heroes: ")
+            for heroId in team_1_heroes:
+                print(f"{heroId}\t=> {getHeroName(heroId)}")
+                
+                
+            
             
             producer.send("topicBD", row)
-
-            print(f"sent")
-            i = not i
+            
+            time.sleep(1)
+            print("="*32)
     except KeyboardInterrupt:
         producer.close()

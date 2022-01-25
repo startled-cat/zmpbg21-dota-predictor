@@ -2,6 +2,7 @@ from pyspark.ml import feature, classification, evaluation, Pipeline
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 from tqdm import tqdm
+import os
 
 characterCount = 113
 schema = StructType([
@@ -29,15 +30,12 @@ instances = 57
 trees = 14
 bins = 4
 
-# print(f"\nminInstancesPerNode = {instances}")
-# build ml model
-# print("========== building ml model")
+print("========== building ml model")
 idx = feature.StringIndexer(inputCol="team_win", outputCol="label",
                             stringOrderType="alphabetAsc", handleInvalid="keep")
 vect = feature.VectorAssembler(
     inputCols=df_train.columns[4:], outputCol="features", handleInvalid="keep")
 # scaler = feature.StandardScaler(inputCol="feat", outputCol="features")
-
 
 forest = classification.RandomForestClassifier(
     maxDepth=maxDepth, minInstancesPerNode=instances, maxBins=bins, maxMemoryInMB=8192, numTrees=trees, seed=42)
@@ -46,7 +44,10 @@ pipe_t = pipe.fit(df_train)
 
 # save model to file
 print("========== saving ml model")
-pipe_t.save("./model")
+model_path = "./model"
+
+# os.remove(model_path)
+pipe_t.save(model_path)
 
 pipe_t2 = pipe_t.transform(df_eval)#.drop(*df_eval.columns[1:])
 evaluator = evaluation.MulticlassClassificationEvaluator(metricName="accuracy")
